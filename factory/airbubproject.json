@@ -1,0 +1,9 @@
+{
+	"name": "airbubproject",
+	"location": "northeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "c4e07769-4655-4dc3-90b6-8a54d831293b",
+		"tenantId": "07d8c8c5-ba08-4399-86b8-b0c942f1d9fe"
+	}
+}
