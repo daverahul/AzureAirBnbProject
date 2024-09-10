@@ -19,7 +19,19 @@
 					"name": "SynapseForLookup"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "BookingFactDataSynapse",
+						"type": "DatasetReference"
+					},
+					"name": "SynapseFactWrite",
+					"rejectedDataLinkedService": {
+						"referenceName": "AirBnBADLS",
+						"type": "LinkedServiceReference"
+					}
+				}
+			],
 			"transformations": [
 				{
 					"name": "DataQualityCheck"
@@ -115,7 +127,7 @@
 				"          amount = derivedColumn@amount,",
 				"          booking_id = DataQualityCheck@AcceptedRecords@booking_id,",
 				"          currency = derivedColumn@currency,",
-				"          property_location,",
+				"          booking_date = DataQualityCheck@AcceptedRecords@booking_date,",
 				"          stay_duration = derivedColumn@stay_duration,",
 				"          booking_year = derivedColumn@booking_year,",
 				"          booking_month = derivedColumn@booking_month,",
@@ -123,8 +135,37 @@
 				"          city = derivedColumn@city,",
 				"          country = derivedColumn@country",
 				"     ),",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> FinalColumns"
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> FinalColumns",
+				"FinalColumns sink(allowSchemaDrift: true,",
+				"     validateSchema: true,",
+				"     input(",
+				"          customer_id as integer,",
+				"          first_name as string,",
+				"          last_name as string,",
+				"          email as string,",
+				"          phone_number as string,",
+				"          address as string,",
+				"          city as string,",
+				"          state as string,",
+				"          country as string,",
+				"          zip_code as string,",
+				"          signup_date as date,",
+				"          last_login as timestamp,",
+				"          total_bookings as integer,",
+				"          total_spent as decimal(10,2),",
+				"          preferred_language as string,",
+				"          referral_code as string,",
+				"          account_status as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:true,",
+				"     upsertable:true,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> SynapseFactWrite"
 			]
 		}
 	}
