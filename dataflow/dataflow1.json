@@ -1,0 +1,93 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "BookingDataCosmos",
+						"type": "DatasetReference"
+					},
+					"name": "BookingData"
+				},
+				{
+					"dataset": {
+						"referenceName": "BookingFactDataSynapse",
+						"type": "DatasetReference"
+					},
+					"name": "SynapseForLookup"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "DataQualityCheck"
+				},
+				{
+					"name": "derivedColumn"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          check_out_date as date,",
+				"          customer_id as short,",
+				"          timestamp as timestamp,",
+				"          owner_id as string,",
+				"          check_in_date as date,",
+				"          property_id as string,",
+				"          amount as double,",
+				"          booking_id as string,",
+				"          currency as string,",
+				"          property_location as (city as string, country as string),",
+				"          booking_date as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     enableChangeFeed: true,",
+				"     changeFeedStartFromTheBeginning: true,",
+				"     format: 'document') ~> BookingData",
+				"source(output(",
+				"          customer_id as integer,",
+				"          first_name as string,",
+				"          last_name as string,",
+				"          email as string,",
+				"          phone_number as string,",
+				"          address as string,",
+				"          city as string,",
+				"          state as string,",
+				"          country as string,",
+				"          zip_code as string,",
+				"          signup_date as date,",
+				"          last_login as timestamp,",
+				"          total_bookings as integer,",
+				"          total_spent as decimal(10,2),",
+				"          preferred_language as string,",
+				"          referral_code as string,",
+				"          account_status as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table',",
+				"     staged: true) ~> SynapseForLookup",
+				"BookingData split(check_out_date<check_in_date,",
+				"     disjoint: true) ~> DataQualityCheck@(BadRecords, AcceptedRecords)",
+				"DataQualityCheck@AcceptedRecords derive(stay_duration = toTimestamp(check_out_date)-toTimestamp(check_in_date),",
+				"          booking_year = year(booking_date),",
+				"          booking_month = month(booking_date),",
+				"          full_address = concat(property_location.city,',',property_location.country),",
+				"          city = property_location.city,",
+				"          country = property_location.country,",
+				"          check_out_date = check_out_date,",
+				"          check_in_date = check_in_date,",
+				"          customer_id = customer_id,",
+				"          timestamp = timestamp,",
+				"          owner_id = owner_id,",
+				"          property_id = property_id,",
+				"          amount = amount,",
+				"          currency = currency) ~> derivedColumn"
+			]
+		}
+	}
+}
