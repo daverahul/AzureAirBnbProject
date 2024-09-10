@@ -1,0 +1,30 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "airbubproject"
+		},
+		"AirBnBADLS_accountKey": {
+			"value": ""
+		},
+		"CosmosDBNew_connectionString": {
+			"value": ""
+		},
+		"SynapseDWH_password": {
+			"value": ""
+		},
+		"AirBnBADLS_properties_typeProperties_url": {
+			"value": "https://airbnbgdsdata.dfs.core.windows.net/"
+		},
+		"SynapseDWH_properties_typeProperties_server": {
+			"value": "demosynapsegds.sql.azuresynapse.net"
+		},
+		"SynapseDWH_properties_typeProperties_database": {
+			"value": "airbnb_dwh"
+		},
+		"SynapseDWH_properties_typeProperties_userName": {
+			"value": "sqladminuser"
+		}
+	}
+}
