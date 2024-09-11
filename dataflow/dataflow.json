@@ -1,5 +1,5 @@
 {
-	"name": "dataflow1",
+	"name": "dataflow",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -115,7 +115,7 @@
 				"derivedColumn, SynapseForLookup lookup(derivedColumn@booking_id == SynapseForLookup@booking_id,",
 				"     multiple: false,",
 				"     pickup: 'first',",
-				"     desc(SynapseForLookup@timestamp, true),",
+				"     desc(SynapseForLookup@timestamp, false),",
 				"     broadcast: 'auto')~> lookup1",
 				"lookup1 alterRow(insertIf(isNull(SynapseForLookup@booking_id)),",
 				"     updateIf(not(isNull(SynapseForLookup@booking_id)))) ~> alterRowForUpdate",
